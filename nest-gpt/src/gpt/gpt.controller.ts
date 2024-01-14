@@ -1,8 +1,11 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 
+import { ChatCompletionChunk } from 'openai/resources';
+import { Stream } from 'openai/streaming';
+
 import { GptService } from './gpt.service';
-import { OrtthographyDto, ProsConsDiscusserDto } from './dtos';
+import { OrtthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
 
 @Controller('gpt')
 export class GptController {
@@ -27,14 +30,36 @@ export class GptController {
     const stream =
       await this.gptService.prosConsDicusserStream(prosConsDiscusserDto);
 
-    res.setHeader('Content-Type', 'application/json');
-    res.status(HttpStatus.OK);
+    this.sendStreamResponse(res, stream);
+  }
 
-    for await (const chunk of stream) {
-      const piece = chunk.choices[0].delta.content || '';
-      res.write(piece);
+  @Post('translate')
+  async translateStream(
+    @Body() translateDto: TranslateDto,
+    @Res() res: Response,
+  ) {
+    const stream = await this.gptService.translateStream(translateDto);
+
+    this.sendStreamResponse(res, stream);
+  }
+
+  private async sendStreamResponse(
+    res: Response,
+    stream: Stream<ChatCompletionChunk>,
+  ) {
+    try {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(HttpStatus.OK);
+
+      for await (const chunk of stream) {
+        const piece = chunk.choices[0].delta.content || '';
+        res.write(piece);
+      }
+
+      res.end();
+    } catch (error) {
+      console.error('Error during stream processing:', error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).end();
     }
-
-    res.end();
   }
 }

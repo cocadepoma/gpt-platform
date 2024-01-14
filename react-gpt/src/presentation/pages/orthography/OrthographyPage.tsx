@@ -53,7 +53,7 @@ export const OrthographyPage = () => {
         </div>
       </div>
 
-      <TextMessageBox onSendMessage={handlePost} placeholder="Type what you need..." />
+      <TextMessageBox onSendMessage={handlePost} placeholder="Type tour text here..." />
 
     </div>
   )

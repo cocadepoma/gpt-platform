@@ -10,6 +10,7 @@ interface Message {
 export const ProsConsStreamPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+
   const abortController = useRef(new AbortController());
   const isRunning = useRef(false);
 
@@ -22,31 +23,6 @@ export const ProsConsStreamPage = () => {
     setIsLoading(true);
     isRunning.current = true;
     setMessages((prev) => [...prev, { text, isGpt: false }]);
-
-    // const reader = await prosConsStreamUseCase(text);
-    // setIsLoading(false);
-
-    // if (!reader) return;
-
-    // const decoder = new TextDecoder();
-    // let message = '';
-    // setMessages((messages) => [...messages, { text: message, isGpt: true }]);
-
-    // // eslint-disable-next-line no-constant-condition
-    // while (true) {
-    //   const { value, done } = await reader.read();
-    //   if (done) break;
-
-    //   const decodedChunk = decoder.decode(value, { stream: true });
-    //   message += decodedChunk;
-
-    //   setMessages((messages) => {
-    //     const newMessages = [...messages];
-    //     newMessages[newMessages.length - 1].text = message;
-
-    //     return newMessages;
-    //   });
-    // }
 
     const stream = prosConsStreamGeneratorUseCase(text, abortController.current.signal);
     setIsLoading(false);
@@ -89,7 +65,7 @@ export const ProsConsStreamPage = () => {
         </div>
       </div>
 
-      <TextMessageBox onSendMessage={handlePost} />
+      <TextMessageBox onSendMessage={handlePost} placeholder="Type tour text here..." />
 
     </div>
   )
