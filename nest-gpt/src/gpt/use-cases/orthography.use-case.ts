@@ -44,7 +44,5 @@ export const orthographyCheckUseCase = async (
     // },
   });
 
-  console.log(completion);
-
   return JSON.parse(completion.choices[0].message.content);
 };
