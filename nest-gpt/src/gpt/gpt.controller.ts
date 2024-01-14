@@ -1,16 +1,49 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
+import type { Response } from 'express';
 
 import { ChatCompletionChunk } from 'openai/resources';
 import { Stream } from 'openai/streaming';
 
 import { GptService } from './gpt.service';
-import { OrtthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
+import {
+  OrtthographyDto,
+  ProsConsDiscusserDto,
+  TextToAudioDto,
+  TranslateDto,
+} from './dtos';
 
 @Controller('gpt')
 export class GptController {
   // eslint-disable-next-line prettier/prettier
   constructor(private readonly gptService: GptService) { }
+
+  @Post('text-to-audio')
+  async textToAudio(
+    @Body() textToAudioDto: TextToAudioDto,
+    @Res() res: Response,
+  ) {
+    const filePath = await this.gptService.textToAudio(textToAudioDto);
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(HttpStatus.OK);
+    res.sendFile(filePath);
+  }
+
+  @Get('text-to-audio/:fileId')
+  async getTextToAudio(@Param('fileId') fileId: string, @Res() res: Response) {
+    const filePath = await this.gptService.getTextToAudio(fileId);
+
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(HttpStatus.OK);
+    res.sendFile(filePath);
+  }
 
   @Post('orthography-check')
   orthographyCheck(@Body() orthographyDto: OrtthographyDto) {
