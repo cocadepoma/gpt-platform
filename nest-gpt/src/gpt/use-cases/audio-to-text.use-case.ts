@@ -14,7 +14,7 @@ export const audioToTextUseCase = async (openai: OpenAI, options: Options) => {
     file: fs.createReadStream(audioFile.path),
     prompt, // Should be the same language as the audio
     language: 'es',
-    response_format: 'text',
+    response_format: 'verbose_json',
   });
 
   return response;
