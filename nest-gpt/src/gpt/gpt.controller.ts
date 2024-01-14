@@ -1,19 +1,27 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
+import { diskStorage } from 'multer';
 
 import { ChatCompletionChunk } from 'openai/resources';
 import { Stream } from 'openai/streaming';
 
 import { GptService } from './gpt.service';
 import {
+  AudioToTextDto,
   OrtthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -34,6 +42,38 @@ export class GptController {
     res.setHeader('Content-Type', 'audio/mp3');
     res.status(HttpStatus.OK);
     res.sendFile(filePath);
+  }
+
+  @Post('audio-to-text')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './generated/uploads',
+        filename: (req, file, callbak) => {
+          const fileExtension = file.originalname.split('.').pop();
+          const fileName = `${new Date().getTime()}.${fileExtension}`;
+
+          return callbak(null, fileName);
+        },
+      }),
+    }),
+  )
+  async audioToText(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 1000 * 1024 * 5,
+            message: 'File is bigger than 5 mb',
+          }),
+          new FileTypeValidator({ fileType: 'audio/*' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Body() audioToTextDto: AudioToTextDto,
+  ) {
+    return await this.gptService.audioToText(file, audioToTextDto);
   }
 
   @Get('text-to-audio/:fileId')
