@@ -26,12 +26,36 @@ import {
   ProsConsDiscusserDto,
   TextToAudioDto,
   TranslateDto,
+  ImageGenerationDto,
+  ImageVariationDto,
 } from './dtos';
 
 @Controller('gpt')
 export class GptController {
   // eslint-disable-next-line prettier/prettier
   constructor(private readonly gptService: GptService) { }
+
+  @Get('image-generation/:fileId')
+  async getGeneratedImage(
+    @Param('fileId') fileId: string,
+    @Res() res: Response,
+  ) {
+    const filePath = await this.gptService.getGeneratedImage(fileId);
+
+    res.setHeader('Content-Type', 'image/png');
+    res.status(HttpStatus.OK);
+    res.sendFile(filePath);
+  }
+
+  @Post('image-generation')
+  async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
+    return await this.gptService.imageGeneration(imageGenerationDto);
+  }
+
+  @Post('image-variation')
+  async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
+    return await this.gptService.imageVariation(imageVariationDto);
+  }
 
   @Post('text-to-audio')
   async textToAudio(

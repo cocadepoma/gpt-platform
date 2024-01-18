@@ -11,7 +11,7 @@ export const TextMessageBoxFile = ({ onSendMessage, placeholder, disableCorrecti
   const [message, setMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null | undefined>();
 
-  const inputFileRef = useRef<HTMLInputElement>(null);
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   const handleSendMessage = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,6 +20,8 @@ export const TextMessageBoxFile = ({ onSendMessage, placeholder, disableCorrecti
 
     onSendMessage(message, selectedFile);
     setMessage('');
+    setSelectedFile(null);
+    inputFileRef.current = null;
   };
 
   return (
