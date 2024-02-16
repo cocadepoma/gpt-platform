@@ -1,4 +1,4 @@
-import { processStreamReader } from "../common/process-stream-reader";
+import { processStreamReader } from "../../common/process-stream-reader";
 
 export async function* prosConsStreamGeneratorUseCase(prompt: string, signal: AbortSignal) {
   try {

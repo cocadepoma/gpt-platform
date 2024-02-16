@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { GptMessage, MyMessage, TextMessageBoxFile, TypingLoader } from "../../components"
-import { audioToTextUseCase } from "../../../core/use-cases/audio-to-text.use-case";
+import { audioToTextUseCase } from "../../../core/use-cases/audio-and-text/audio-to-text.use-case";
 
 interface Message {
   text: string;

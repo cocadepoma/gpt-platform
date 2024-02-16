@@ -1,4 +1,4 @@
-import { processStreamReader } from "../common/process-stream-reader";
+import { processStreamReader } from "../../common/process-stream-reader";
 
 export async function* translateStreamUseCase(prompt: string, lang: string, signal: AbortSignal) {
   try {
