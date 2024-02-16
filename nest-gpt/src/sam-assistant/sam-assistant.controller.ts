@@ -4,15 +4,16 @@ import { QuestionDto } from './dtos/question.dto';
 
 @Controller('sam-assistant')
 export class SamAssistantController {
-  constructor(private readonly samAssistantService: SamAssistantService) {}
+  // eslint-disable-next-line prettier/prettier
+  constructor(private readonly samAssistantService: SamAssistantService) { }
 
   @Post('create-thread')
   async createThread() {
-    return 'create-thread';
+    return this.samAssistantService.createThread();
   }
 
   @Post('user-question')
   async userQuestion(@Body() questionDto: QuestionDto) {
-    return questionDto;
+    return this.samAssistantService.userQuestion(questionDto);
   }
 }

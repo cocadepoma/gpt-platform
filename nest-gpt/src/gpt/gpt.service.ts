@@ -29,7 +29,7 @@ export class GptService {
   private openai: OpenAI;
 
   constructor() {
-    this.openai = new OpenAI({ apiKey: process.env.OPEN_API_KEY || '' });
+    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });
   }
 
   async orthographyCheck(orthographyDto: OrtthographyDto) {
