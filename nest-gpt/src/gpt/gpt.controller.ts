@@ -47,6 +47,16 @@ export class GptController {
     res.sendFile(filePath);
   }
 
+  @Post('free-prompt')
+  async freePromt(
+    @Body() { prompt }: { prompt: string },
+    @Res() res: Response,
+  ) {
+    const stream = await this.gptService.freePrompt(prompt);
+
+    this.sendStreamResponse(res, stream);
+  }
+
   @Post('image-generation')
   async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
     return await this.gptService.imageGeneration(imageGenerationDto);

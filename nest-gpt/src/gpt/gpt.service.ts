@@ -23,6 +23,7 @@ import {
   ImageGenerationUseCase,
   GenerateImageVariationUseCase,
 } from './use-cases';
+import { freePromptUseCase } from './use-cases/free-prompt.use-case';
 
 @Injectable()
 export class GptService {
@@ -30,6 +31,10 @@ export class GptService {
 
   constructor() {
     this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });
+  }
+
+  async freePrompt(prompt: string) {
+    return await freePromptUseCase(this.openai, { prompt });
   }
 
   async orthographyCheck(orthographyDto: OrtthographyDto) {
