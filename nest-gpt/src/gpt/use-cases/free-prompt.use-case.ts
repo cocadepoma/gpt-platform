@@ -14,7 +14,7 @@ export const freePromptUseCase = async (openai: OpenAI, options: Options) => {
         content: `El usuario te va a pasar un prompt, recuerda responderle en el idioma del prompt, el prompt es: ${prompt}`,
       },
     ],
-    model: 'gpt-4-1106-preview',
+    model: 'gpt-4o-mini',
     temperature: 0.2,
   });
 };
